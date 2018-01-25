@@ -1,4 +1,6 @@
-# key: vote_id,preferred_vote,weight
+# Lines that start with # (like this one) are ignored.
+# format: session code from Open States, Bill Number, vote_id from Open States, Preferred Vote, Weight
+#
 # House vote on 2017RS SB 234 Taproom consumer privacy
 2017rs,SB 234,ALV00013769,Y,8
 # Senate vote on 2017RS SB 234 Taproom consumer privacy
