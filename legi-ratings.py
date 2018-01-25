@@ -1,9 +1,43 @@
+""" legi-ratings.py
+
+This script assigns a number and letter grade to legislators in states based on specified
+votes. It uses the Open States API for records.
+
+Example:
+    $ python legi-ratings.py input_file.txt
+
+Todo:
+    * upper and lower legislators should go to separate files or a single excel file
+    * currently the script writes all votes for each chamber, so house votes are listed in the senate list. This
+        should be corrected so that only house votes are listed in the house and senate votes in the senate. A current
+        workaroud is to just remove the extra votes
+
+Required Modules:
+    * pyopenstates
+    * os.path
+    * sys
+
+Author:
+    * Dan Roberts droberts@albeer.org
+
+License:
+    * MIT
+"""
+
 import os.path
 import sys
 import config
 import pyopenstates as osClient
 
 def GetLegislators(state, chamber):
+    """
+        Args:
+            state (str): two-letter state string for Open State lookup
+            chamber (str): Open States chamber string, should be 'lower' or 'upper'
+        Returns:
+            list: A lsit of legislator-dictionaries with incumbent information for the
+                state and chamber.
+    """
     legislators = osClient.search_legislators(state=state, chamber=chamber, active=True)
     legislator_list = []
     for l in legislators:
@@ -20,6 +54,13 @@ def GetLegislators(state, chamber):
     return legislator_list;
 
 def AddVotes(legislators, vote_data):
+    """
+        Args:
+            legislators (list): Pre-populated legislator information
+            vote_data (obj): Open States vote object
+        Returns:
+            list: Returns the legislators parameter but populated with the vote records
+    """
     for l in legislators:
         if next( (x for x in vote_data['yes_votes'] if x['leg_id'] in l['all_ids']), None ) is not None:
             l['votes'][vote_data['vote_id']] = 'Y'
@@ -29,6 +70,41 @@ def AddVotes(legislators, vote_data):
             l['votes'][vote_data['vote_id']] = 'O'
     return legislators
 
+def WriteVotes(legislators):
+    """
+        Args:
+            legislators (list): Pre-populated legislator information with voting records
+        Returns:
+            str: a comma-delimited set of lines for writing a CSV file with legislator information,
+                votes, and scoring
+    """
+    lines = ''
+    for leg in legislators:
+        total_right = 0
+        total_possible = 0
+        line = leg['district'] + ',' + leg['name'] + ',' + leg['party']
+        for v in tracked_votes:
+            vote_id = v['vote_id']
+            vote_pref = v['vote_preference']
+            vote_weight = v['vote_weight']
+            vote_cast = 'NA'
+            if vote_id in leg['votes']:
+                vote_cast = leg['votes'][vote_id]
+            line += "," + vote_cast
+
+            if vote_cast == 'Y' or vote_cast == 'N' or vote_cast == vote_pref:
+                total_possible += int(vote_weight)
+            if vote_cast == vote_pref:
+                total_right += int(vote_weight)
+        if total_possible == 0:
+            score = '-'
+        else:
+            score = round(total_right / float(total_possible),3)
+        
+        lines = line + ',' + str(score) + ',' + str(letter_score) + '\n')
+    return lines
+
+# Main:
 # Validate input
 if len(sys.argv) < 2:
     raise ValueError("Must provide input file as argument in command line")
@@ -70,30 +146,7 @@ for v in tracked_votes:
     header_line += "," + v['vote_bill_no'] + " (" + v['vote_session'] + ")"
 
 export_fh.write(header_line + '\n')
-for leg in upper_legislators:
-    total_right = 0
-    total_possible = 0
-    line = leg['district'] + ',' + leg['name'] + ',' + leg['party']
-    for v in tracked_votes:
-        vote_id = v['vote_id']
-        vote_pref = v['vote_preference']
-        vote_weight = v['vote_weight']
-        vote_cast = 'NA'
-        if vote_id in leg['votes']:
-            vote_cast = leg['votes'][vote_id]
-        line += "," + vote_cast
-
-        if vote_cast == 'Y' or vote_cast == 'N' or vote_cast == vote_pref:
-            total_possible += int(vote_weight)
-        if vote_cast == vote_pref:
-            total_right += int(vote_weight)
-    if total_possible == 0:
-        score = '-'
-    else:
-        score = round(total_right / float(total_possible),3)
-        
-    export_fh.write(line + ',' + str(score) + '\n')
-
+export_fth.write( WriteVotes(upper_legislators) )
 
 export_fh.write('Lower' + '\n')
 header_line = 'HD,Name,Party'
@@ -101,29 +154,5 @@ for v in tracked_votes:
     header_line += "," + v['vote_bill_no'] + " (" + v['vote_session'] + ")"
 
 export_fh.write(header_line + '\n')
-for leg in lower_legislators:
-    total_right = 0
-    total_possible = 0
-    line = leg['district'] + ',' + leg['name'] + ',' + leg['party']
-    for v in tracked_votes:
-        vote_id = v['vote_id']
-        vote_pref = v['vote_preference']
-        vote_weight = v['vote_weight']
-        vote_cast = 'NA'
-        if vote_id in leg['votes']:
-            vote_cast = leg['votes'][vote_id]
-        line += "," + vote_cast
-
-        if vote_cast == 'Y' or vote_cast == 'N' or vote_cast == vote_pref:
-            total_possible += int(vote_weight)
-        if vote_cast == vote_pref:
-            total_right += int(vote_weight)
-    if total_possible == 0:
-        score = '-'
-    else:
-        score = round(total_right / float(total_possible),3)
-        
-    export_fh.write(line + ',' + str(score) + '\n')
-
-
+export_fth.write( WriteVotes(lower_legislators) )
             

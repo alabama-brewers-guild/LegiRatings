@@ -1,3 +1,10 @@
+# Config and output
+config.py
+output.csv
+
+# VS Code fodler
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
