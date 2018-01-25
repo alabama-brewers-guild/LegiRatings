@@ -1,0 +1,29 @@
+# key: vote_id,preferred_vote,weight
+# House vote on 2017RS SB 234 Taproom consumer privacy
+2017rs,SB 234,ALV00013769,Y,8
+# Senate vote on 2017RS SB 234 Taproom consumer privacy
+2017rs,SB 234,ALV00012700,Y,8
+# House vote on 2017RS HB 353 Brunch bill
+2017rs,HB 353,ALV00013156,Y,2
+# Senate vote on 2017RS HB 353 Brunch bill
+2017rs,HB 353,ALV00013815,Y,2
+# House vote on 2017RS HB 185 Class 2 municipalities entertainment zone expansion
+2017rs,HB 185,ALV00012821,Y,3
+# Senate vote on 2017RS HB 185 Class 2 municipalities entertainment zone expansion
+2017rs,HB 185,ALV00012820,Y,3
+# House vote on 2017RS HB 345 Historic Tax Credits
+2017rs,HB 345,ALV00013089,Y,1
+# Senate vote on 2017RS HB 345 Historic Tax Credits
+2017rs,HB 345,ALV00013488,Y,1
+# House vote on 2016RS SB 132 Distillery Off-Premise Bill
+2016rs,SB 132,ALV00010685,Y,7
+# Senate vote on 2016RS SB 132 Distillery Off-Premise Bill
+2016rs,SB 132,ALV00010295,Y,7
+# House vote on 2016RS HB 176 Growler Bill
+2016rs,HB 176,ALV00010136,Y,10
+# Senate vote on 2016RS HB 176 Growler Bill
+2016rs,HB 176,ALV00010396,Y,10
+# House vote on SB 166 Winery off-site tasting rooms
+2016rs,SB 166,ALV00010715,Y,7
+# Senate vote on SB 166 Winery off-site tasting rooms
+2016rs,SB 166,ALV00010308,Y,7
